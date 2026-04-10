@@ -30,6 +30,18 @@ requiere(marketing_digital, creatividad).
 requiere(administrador, gestion).
 requiere(administrador, liderazgo).
 
+% Compatibilidad
+compatible(programador, analista_datos).
+compatible(marketing_digital, administrador).
+
+% Ofertas simuladas
+oferta(programador).
+oferta(soporte_tecnico).
+
+% =========================
+% TODAS LAS REGLAS JUNTAS
+% =========================
+
 % Reglas principales
 recomendar(programador) :-
     habilidad(programacion),
@@ -91,22 +103,24 @@ recomendar(marketing_digital) :-
     habilidad(creatividad),
     interes(redes_sociales).
 
-% Reglas adicionales (para llegar a 40)
+% Reglas por ofertas
+recomendar(programador) :-
+    oferta(programador).
+
+recomendar(soporte_tecnico) :-
+    oferta(soporte_tecnico).
+
+% =========================
+% Reglas adicionales
+% =========================
 recomendacion_extra(cursos_programacion) :- recomendar(programador).
 recomendacion_extra(portafolio) :- recomendar(disenador_grafico).
 recomendacion_extra(certificacion_redes) :- recomendar(soporte_tecnico).
 recomendacion_extra(analisis_excel) :- recomendar(analista_datos).
 
-% Compatibilidad
-compatible(programador, analista_datos).
-compatible(marketing_digital, administrador).
-
-% Ofertas simuladas
-oferta(programador).
-oferta(soporte_tecnico).
-
-recomendar(programador) :- oferta(programador).
-recomendar(soporte_tecnico) :- oferta(soporte_tecnico).
+% =========================
+% INTERACCIÓN
+% =========================
 
 inicio :-
     write('--- SISTEMA EXPERTO DE EMPLEOS ---'), nl,
