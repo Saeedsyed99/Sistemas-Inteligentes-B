@@ -1,139 +1,220 @@
-:- dynamic habilidad/1.
-:- dynamic experiencia/1.
-:- dynamic interes/1.
-:- dynamic nivel_estudio/1.
+:- dynamic area_legal/1.
+:- dynamic caso_previo/1.
+:- dynamic situacion_actual/1.
+:- dynamic feedback/1.
 
-% Empleos
-empleo(programador).
-empleo(disenador_grafico).
-empleo(soporte_tecnico).
-empleo(analista_datos).
-empleo(marketing_digital).
-empleo(administrador).
+% =========================
+% BASE DE CONOCIMIENTO LEGAL
+% =========================
 
-% Habilidades requeridas
-requiere(programador, programacion).
-requiere(programador, logica).
+% Áreas legales
+area(1, derecho_penal).
+area(2, derecho_civil).
+area(3, derecho_laboral).
+area(4, derecho_familiar).
 
-requiere(disenador_grafico, creatividad).
-requiere(disenador_grafico, diseno).
+% Situaciones legales
+situacion(1, despido_injustificado).
+situacion(2, incumplimiento_contrato).
+situacion(3, violencia_familiar).
+situacion(4, robo).
 
-requiere(soporte_tecnico, redes).
-requiere(soporte_tecnico, hardware).
+% Casos previos
+caso(1, ninguno).
+caso(2, incumplimiento_contrato).
 
-requiere(analista_datos, matematicas).
-requiere(analista_datos, estadistica).
+% =========================
+% LEYES
+% =========================
 
-requiere(marketing_digital, comunicacion).
-requiere(marketing_digital, creatividad).
+ley(derecho_penal, codigo_penal).
+ley(derecho_civil, codigo_civil).
+ley(derecho_laboral, ley_trabajo).
+ley(derecho_familiar, ley_familia).
 
-requiere(administrador, gestion).
-requiere(administrador, liderazgo).
+% =========================
+% JURISPRUDENCIA
+% =========================
 
-% Reglas principales
-recomendar(programador) :-
-    habilidad(programacion),
-    interes(tecnologia).
+jurisprudencia(despido_injustificado, caso_001).
+jurisprudencia(incumplimiento_contrato, caso_002).
+jurisprudencia(violencia_familiar, caso_003).
+jurisprudencia(robo, caso_004).
 
-recomendar(disenador_grafico) :-
-    habilidad(creatividad),
-    interes(arte).
+% =========================
+% REGLAS CON PUNTAJE
+% =========================
 
-recomendar(soporte_tecnico) :-
-    habilidad(redes),
-    interes(tecnologia).
+puntaje(consultar_abogado_penal, 5) :- area_legal(derecho_penal).
+puntaje(consultar_abogado_civil, 5) :- area_legal(derecho_civil).
+puntaje(consultar_abogado_laboral, 5) :- area_legal(derecho_laboral).
+puntaje(consultar_abogado_familiar, 5) :- area_legal(derecho_familiar).
 
-recomendar(analista_datos) :-
-    habilidad(matematicas),
-    interes(datos).
+puntaje(demandar_empresa, 8) :- situacion_actual(despido_injustificado).
+puntaje(revisar_contrato, 7) :- situacion_actual(incumplimiento_contrato).
+puntaje(denunciar, 10) :- situacion_actual(violencia_familiar).
+puntaje(reportar_delito, 9) :- situacion_actual(robo).
 
-recomendar(marketing_digital) :-
-    habilidad(comunicacion),
-    interes(negocios).
+puntaje(asesoria_integral, 6) :- caso_previo(incumplimiento_contrato).
 
-recomendar(administrador) :-
-    habilidad(gestion),
-    interes(empresa).
+% =========================
+% EXPLICACIONES
+% =========================
 
-% Reglas por experiencia
-recomendar(programador) :-
-    experiencia(alta),
-    habilidad(programacion).
+explicacion(consultar_abogado_penal, 'Caso del area penal').
+explicacion(consultar_abogado_civil, 'Conflicto civil detectado').
+explicacion(consultar_abogado_laboral, 'Problema laboral').
+explicacion(consultar_abogado_familiar, 'Conflicto familiar').
+explicacion(demandar_empresa, 'Despido injustificado').
+explicacion(revisar_contrato, 'Incumplimiento de contrato').
+explicacion(denunciar, 'Violencia familiar detectada').
+explicacion(reportar_delito, 'Delito detectado').
+explicacion(asesoria_integral, 'Tiene antecedentes similares').
 
-recomendar(analista_datos) :-
-    experiencia(media),
-    habilidad(estadistica).
-
-recomendar(soporte_tecnico) :-
-    experiencia(baja),
-    habilidad(hardware).
-
-% Reglas por nivel de estudio
-recomendar(programador) :-
-    nivel_estudio(universitario).
-
-recomendar(administrador) :-
-    nivel_estudio(universitario).
-
-recomendar(soporte_tecnico) :-
-    nivel_estudio(tecnico).
-
-% Reglas combinadas
-recomendar(programador) :-
-    habilidad(logica),
-    interes(tecnologia).
-
-recomendar(disenador_grafico) :-
-    habilidad(diseno),
-    interes(arte).
-
-recomendar(marketing_digital) :-
-    habilidad(creatividad),
-    interes(redes_sociales).
-
-% Reglas adicionales (para llegar a 40)
-recomendacion_extra(cursos_programacion) :- recomendar(programador).
-recomendacion_extra(portafolio) :- recomendar(disenador_grafico).
-recomendacion_extra(certificacion_redes) :- recomendar(soporte_tecnico).
-recomendacion_extra(analisis_excel) :- recomendar(analista_datos).
-
-% Compatibilidad
-compatible(programador, analista_datos).
-compatible(marketing_digital, administrador).
-
-% Ofertas simuladas
-oferta(programador).
-oferta(soporte_tecnico).
-
-recomendar(programador) :- oferta(programador).
-recomendar(soporte_tecnico) :- oferta(soporte_tecnico).
+% =========================
+% INICIO
+% =========================
 
 inicio :-
-    write('--- SISTEMA EXPERTO DE EMPLEOS ---'), nl,
-    preguntar_habilidad,
-    preguntar_interes,
-    preguntar_experiencia,
-    recomendar_empleo.
+    limpiar,
+    write('===== SISTEMA EXPERTO LEGAL AVANZADO ====='), nl,
+    preguntar_area,
+    preguntar_situacion,
+    preguntar_caso,
+    mejores_recomendaciones,
+    guardar_feedback.
 
-preguntar_habilidad :-
-    write('Ingrese habilidad (programacion/creatividad/redes/matematicas/gestion): '),
-    read(H),
-    assert(habilidad(H)).
+% =========================
+% VALIDACION GENERICA
+% =========================
 
-preguntar_interes :-
-    write('Ingrese interes (tecnologia/arte/datos/negocios/empresa): '),
-    read(I),
-    assert(interes(I)).
+leer_opcion_valida(Predicado, Valor) :-
+    read(Opcion),
+    (call(Predicado, Opcion, Valor) ->
+        true
+    ;
+        write('❌ Opcion invalida, intente de nuevo'), nl,
+        leer_opcion_valida(Predicado, Valor)
+    ).
 
-preguntar_experiencia :-
-    write('Nivel de experiencia (baja/media/alta): '),
-    read(E),
-    assert(experiencia(E)).
+% =========================
+% PREGUNTAS
+% =========================
 
-recomendar_empleo :-
-    recomendar(X),
-    write('Empleo recomendado: '), write(X), nl,
+preguntar_area :-
+    write('Seleccione area legal:'), nl,
+    mostrar_areas,
+    leer_opcion_valida(area, A),
+    assert(area_legal(A)).
+
+mostrar_areas :-
+    area(N, A),
+    write(N), write('. '), write(A), nl,
     fail.
+mostrar_areas.
 
-recomendar_empleo :-
-    write('Fin de recomendaciones'), nl.
+preguntar_situacion :-
+    write('Seleccione situacion:'), nl,
+    mostrar_situaciones,
+    leer_opcion_valida(situacion, S),
+    assert(situacion_actual(S)).
+
+mostrar_situaciones :-
+    situacion(N, S),
+    write(N), write('. '), write(S), nl,
+    fail.
+mostrar_situaciones.
+
+preguntar_caso :-
+    write('¿Tiene casos previos?'), nl,
+    mostrar_casos,
+    leer_opcion_valida(caso, C),
+    (C \= ninguno -> assert(caso_previo(C)) ; true).
+
+mostrar_casos :-
+    caso(N, C),
+    write(N), write('. '), write(C), nl,
+    fail.
+mostrar_casos.
+
+% =========================
+% MOTOR AVANZADO
+% =========================
+
+mejores_recomendaciones :-
+    findall(P-R, puntaje(R, P), Lista),
+    sort(Lista, Ordenada),
+    reverse(Ordenada, ListaFinal),
+    mostrar_top(ListaFinal, 3).
+
+mostrar_top(_, 0).
+mostrar_top([], _).
+mostrar_top([P-R|T], N) :-
+    N > 0,
+    nl,
+    write('>>> RECOMENDACION <<<'), nl,
+    write(R), nl,
+    explicacion(R, Exp),
+    write('Motivo: '), write(Exp), nl,
+    write('Puntaje: '), write(P), nl,
+    mostrar_base_legal(R),
+    N1 is N - 1,
+    mostrar_top(T, N1).
+
+% =========================
+% BASE LEGAL EN SALIDA
+% =========================
+
+mostrar_base_legal(consultar_abogado_penal) :-
+    ley(derecho_penal, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(consultar_abogado_civil) :-
+    ley(derecho_civil, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(consultar_abogado_laboral) :-
+    ley(derecho_laboral, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(consultar_abogado_familiar) :-
+    ley(derecho_familiar, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(demandar_empresa) :-
+    jurisprudencia(despido_injustificado, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(revisar_contrato) :-
+    jurisprudencia(incumplimiento_contrato, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(denunciar) :-
+    jurisprudencia(violencia_familiar, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(reportar_delito) :-
+    jurisprudencia(robo, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(_).
+
+% =========================
+% FEEDBACK
+% =========================
+
+guardar_feedback :-
+    write('¿La recomendacion fue util? (1=si, 2=no): '),
+    read(R),
+    (R = 1 -> assert(feedback(positivo))
+    ; R = 2 -> assert(feedback(negativo))
+    ; write('❌ Opcion invalida'), nl, guardar_feedback).
+
+% =========================
+% LIMPIAR
+% =========================
+
+limpiar :-
+    retractall(area_legal(_)),
+    retractall(situacion_actual(_)),
+    retractall(caso_previo(_)).
