@@ -24,7 +24,7 @@ caso(1, ninguno).
 caso(2, incumplimiento_contrato).
 
 % =========================
-% LEYES (Base legal real)
+% LEYES
 % =========================
 
 ley(derecho_penal, codigo_penal).
@@ -77,11 +77,11 @@ explicacion(asesoria_integral, 'Tiene antecedentes similares').
 
 inicio :-
     limpiar,
-    write('===== SISTEMA EXPERTO LEGAL ====='), nl,
+    write('===== SISTEMA EXPERTO LEGAL AVANZADO ====='), nl,
     preguntar_area,
     preguntar_situacion,
     preguntar_caso,
-    mejor_recomendacion,
+    mejores_recomendaciones,
     guardar_feedback.
 
 % =========================
@@ -98,7 +98,7 @@ leer_opcion_valida(Predicado, Valor) :-
     ).
 
 % =========================
-% PREGUNTAS CON VALIDACION
+% PREGUNTAS
 % =========================
 
 preguntar_area :-
@@ -138,19 +138,66 @@ mostrar_casos :-
 mostrar_casos.
 
 % =========================
-% MOTOR DE DECISION
+% MOTOR AVANZADO
 % =========================
 
-mejor_recomendacion :-
+mejores_recomendaciones :-
     findall(P-R, puntaje(R, P), Lista),
     sort(Lista, Ordenada),
-    reverse(Ordenada, [MejorPuntaje-Mejor|_]),
+    reverse(Ordenada, ListaFinal),
+    mostrar_top(ListaFinal, 3).
+
+mostrar_top(_, 0).
+mostrar_top([], _).
+mostrar_top([P-R|T], N) :-
+    N > 0,
     nl,
-    write('>>> MEJOR RECOMENDACION <<<'), nl,
-    write(Mejor), nl,
-    explicacion(Mejor, Exp),
+    write('>>> RECOMENDACION <<<'), nl,
+    write(R), nl,
+    explicacion(R, Exp),
     write('Motivo: '), write(Exp), nl,
-    write('Puntaje: '), write(MejorPuntaje), nl.
+    write('Puntaje: '), write(P), nl,
+    mostrar_base_legal(R),
+    N1 is N - 1,
+    mostrar_top(T, N1).
+
+% =========================
+% BASE LEGAL EN SALIDA
+% =========================
+
+mostrar_base_legal(consultar_abogado_penal) :-
+    ley(derecho_penal, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(consultar_abogado_civil) :-
+    ley(derecho_civil, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(consultar_abogado_laboral) :-
+    ley(derecho_laboral, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(consultar_abogado_familiar) :-
+    ley(derecho_familiar, L),
+    write('Ley aplicable: '), write(L), nl.
+
+mostrar_base_legal(demandar_empresa) :-
+    jurisprudencia(despido_injustificado, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(revisar_contrato) :-
+    jurisprudencia(incumplimiento_contrato, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(denunciar) :-
+    jurisprudencia(violencia_familiar, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(reportar_delito) :-
+    jurisprudencia(robo, C),
+    write('Caso similar: '), write(C), nl.
+
+mostrar_base_legal(_).
 
 % =========================
 % FEEDBACK
