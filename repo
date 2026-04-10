@@ -4,21 +4,42 @@
 :- dynamic feedback/1.
 
 % =========================
-% BASE DE CONOCIMIENTO
+% BASE DE CONOCIMIENTO LEGAL
 % =========================
 
+% Áreas legales
 area(1, derecho_penal).
 area(2, derecho_civil).
 area(3, derecho_laboral).
 area(4, derecho_familiar).
 
+% Situaciones legales
 situacion(1, despido_injustificado).
 situacion(2, incumplimiento_contrato).
 situacion(3, violencia_familiar).
 situacion(4, robo).
 
+% Casos previos
 caso(1, ninguno).
 caso(2, incumplimiento_contrato).
+
+% =========================
+% LEYES (Base legal real)
+% =========================
+
+ley(derecho_penal, codigo_penal).
+ley(derecho_civil, codigo_civil).
+ley(derecho_laboral, ley_trabajo).
+ley(derecho_familiar, ley_familia).
+
+% =========================
+% JURISPRUDENCIA
+% =========================
+
+jurisprudencia(despido_injustificado, caso_001).
+jurisprudencia(incumplimiento_contrato, caso_002).
+jurisprudencia(violencia_familiar, caso_003).
+jurisprudencia(robo, caso_004).
 
 % =========================
 % REGLAS CON PUNTAJE
@@ -67,13 +88,13 @@ inicio :-
 % VALIDACION GENERICA
 % =========================
 
-leer_opcion_valida(Predicado, OpcionValida) :-
+leer_opcion_valida(Predicado, Valor) :-
     read(Opcion),
-    (call(Predicado, Opcion, OpcionValida) ->
+    (call(Predicado, Opcion, Valor) ->
         true
     ;
         write('❌ Opcion invalida, intente de nuevo'), nl,
-        leer_opcion_valida(Predicado, OpcionValida)
+        leer_opcion_valida(Predicado, Valor)
     ).
 
 % =========================
@@ -132,7 +153,7 @@ mejor_recomendacion :-
     write('Puntaje: '), write(MejorPuntaje), nl.
 
 % =========================
-% FEEDBACK CON VALIDACION
+% FEEDBACK
 % =========================
 
 guardar_feedback :-
