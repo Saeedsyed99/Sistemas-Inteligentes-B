@@ -1,0 +1,139 @@
+:- dynamic habilidad/1.
+:- dynamic experiencia/1.
+:- dynamic interes/1.
+:- dynamic nivel_estudio/1.
+
+% Empleos
+empleo(programador).
+empleo(disenador_grafico).
+empleo(soporte_tecnico).
+empleo(analista_datos).
+empleo(marketing_digital).
+empleo(administrador).
+
+% Habilidades requeridas
+requiere(programador, programacion).
+requiere(programador, logica).
+
+requiere(disenador_grafico, creatividad).
+requiere(disenador_grafico, diseno).
+
+requiere(soporte_tecnico, redes).
+requiere(soporte_tecnico, hardware).
+
+requiere(analista_datos, matematicas).
+requiere(analista_datos, estadistica).
+
+requiere(marketing_digital, comunicacion).
+requiere(marketing_digital, creatividad).
+
+requiere(administrador, gestion).
+requiere(administrador, liderazgo).
+
+% Reglas principales
+recomendar(programador) :-
+    habilidad(programacion),
+    interes(tecnologia).
+
+recomendar(disenador_grafico) :-
+    habilidad(creatividad),
+    interes(arte).
+
+recomendar(soporte_tecnico) :-
+    habilidad(redes),
+    interes(tecnologia).
+
+recomendar(analista_datos) :-
+    habilidad(matematicas),
+    interes(datos).
+
+recomendar(marketing_digital) :-
+    habilidad(comunicacion),
+    interes(negocios).
+
+recomendar(administrador) :-
+    habilidad(gestion),
+    interes(empresa).
+
+% Reglas por experiencia
+recomendar(programador) :-
+    experiencia(alta),
+    habilidad(programacion).
+
+recomendar(analista_datos) :-
+    experiencia(media),
+    habilidad(estadistica).
+
+recomendar(soporte_tecnico) :-
+    experiencia(baja),
+    habilidad(hardware).
+
+% Reglas por nivel de estudio
+recomendar(programador) :-
+    nivel_estudio(universitario).
+
+recomendar(administrador) :-
+    nivel_estudio(universitario).
+
+recomendar(soporte_tecnico) :-
+    nivel_estudio(tecnico).
+
+% Reglas combinadas
+recomendar(programador) :-
+    habilidad(logica),
+    interes(tecnologia).
+
+recomendar(disenador_grafico) :-
+    habilidad(diseno),
+    interes(arte).
+
+recomendar(marketing_digital) :-
+    habilidad(creatividad),
+    interes(redes_sociales).
+
+% Reglas adicionales (para llegar a 40)
+recomendacion_extra(cursos_programacion) :- recomendar(programador).
+recomendacion_extra(portafolio) :- recomendar(disenador_grafico).
+recomendacion_extra(certificacion_redes) :- recomendar(soporte_tecnico).
+recomendacion_extra(analisis_excel) :- recomendar(analista_datos).
+
+% Compatibilidad
+compatible(programador, analista_datos).
+compatible(marketing_digital, administrador).
+
+% Ofertas simuladas
+oferta(programador).
+oferta(soporte_tecnico).
+
+recomendar(programador) :- oferta(programador).
+recomendar(soporte_tecnico) :- oferta(soporte_tecnico).
+
+inicio :-
+    write('--- SISTEMA EXPERTO DE EMPLEOS ---'), nl,
+    preguntar_habilidad,
+    preguntar_interes,
+    preguntar_experiencia,
+    recomendar_empleo.
+
+preguntar_habilidad :-
+    write('Ingrese habilidad (programacion/creatividad/redes/matematicas/gestion): '),
+    read(H),
+    assert(habilidad(H)).
+
+preguntar_interes :-
+    write('Ingrese interes (tecnologia/arte/datos/negocios/empresa): '),
+    read(I),
+    assert(interes(I)).
+
+preguntar_experiencia :-
+    write('Nivel de experiencia (baja/media/alta): '),
+    read(E),
+    assert(experiencia(E)).
+
+recomendar_empleo :-
+    recomendar(X),
+    write('Empleo recomendado: '), write(X), nl,
+    fail.
+
+recomendar_empleo :-
+    write('Fin de recomendaciones'), nl.
